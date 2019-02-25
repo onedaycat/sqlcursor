@@ -182,7 +182,7 @@ func (c *QueryCursorBuilder) createOrQuery(n int) string {
 			orQuery = append(orQuery, fmt.Sprintf("%s %s ?", c.sortFields[0].name, c.sortFields[0].comp))
 		} else {
 			c.bindValues = append(c.bindValues, c.values[0], c.values[i])
-			orQuery = append(orQuery, fmt.Sprintf("(%s %s ? AND %s %s ?)", c.sortFields[0].name, c.sortFields[0].comp, c.sortFields[i].name, c.sortFields[i].comp))
+			orQuery = append(orQuery, fmt.Sprintf("(%s %s ? AND %s %s ?)", c.sortFields[0].name, "=", c.sortFields[i].name, c.sortFields[i].comp))
 		}
 	}
 

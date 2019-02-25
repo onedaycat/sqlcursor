@@ -20,7 +20,7 @@ func TestQueryWithWhereAndOneToken(t *testing.T) {
 		Where("id = `?`").
 		Build()
 	require.NoError(t, err)
-	require.Equal(t, "SELECT * FROM user WHERE (id = `?`) AND (id > ?) ORDER BY id ASC LIMIT 4", query)
+	require.Equal(t, "SELECT * FROM user WHERE (id = `?`) AND (id > ?)  ORDER BY id ASC LIMIT 4", query)
 	require.Equal(t, []interface{}{"a4"}, values)
 }
 
@@ -57,7 +57,7 @@ func TestQueryWithWhereAndOneTokenAndBind(t *testing.T) {
 		Where("id = `?`").
 		Build(1)
 	require.NoError(t, err)
-	require.Equal(t, "SELECT * FROM user WHERE (id = `?`) AND (id > ?) ORDER BY id ASC LIMIT 4", query)
+	require.Equal(t, "SELECT * FROM user WHERE (id = `?`) AND (id > ?)  ORDER BY id ASC LIMIT 4", query)
 	require.Equal(t, []interface{}{1, "a4"}, values)
 }
 
@@ -68,7 +68,7 @@ func TestQueryWithWhereAndToken(t *testing.T) {
 		Query("SELECT * FROM user").
 		Where("id = `?`").
 		Build()
-	require.Equal(t, "SELECT * FROM user WHERE (id = `?`) AND (a < ? OR (a < ? AND id > ?)) ORDER BY a DESC, id ASC LIMIT 4", query)
+	require.Equal(t, "SELECT * FROM user WHERE (id = `?`) AND (a < ? OR (a = ? AND id > ?))  ORDER BY a DESC, id ASC LIMIT 4", query)
 	require.Equal(t, []interface{}{"a4", "a4", "1"}, values)
 	require.NoError(t, err)
 }
@@ -80,7 +80,7 @@ func TestQueryWithWhereAndTokenAndBind(t *testing.T) {
 		Query("SELECT * FROM user").
 		Where("id = `?`").
 		Build(1)
-	require.Equal(t, "SELECT * FROM user WHERE (id = `?`) AND (a < ? OR (a < ? AND id > ?)) ORDER BY a DESC, id ASC LIMIT 4", query)
+	require.Equal(t, "SELECT * FROM user WHERE (id = `?`) AND (a < ? OR (a = ? AND id > ?))  ORDER BY a DESC, id ASC LIMIT 4", query)
 	require.Equal(t, []interface{}{1, "a4", "a4", "1"}, values)
 	require.NoError(t, err)
 }
@@ -93,7 +93,7 @@ func TestQueryWithWhereAndGroupAndTokenAndBind(t *testing.T) {
 		Where("id = `?`").
 		Group("id").
 		Build(1)
-	require.Equal(t, "SELECT * FROM user WHERE (id = `?`) AND (a < ? OR (a < ? AND id > ?)) GROUP BY id ORDER BY a DESC, id ASC LIMIT 4", query)
+	require.Equal(t, "SELECT * FROM user WHERE (id = `?`) AND (a < ? OR (a = ? AND id > ?)) GROUP BY id ORDER BY a DESC, id ASC LIMIT 4", query)
 	require.Equal(t, []interface{}{1, "a4", "a4", "1"}, values)
 	require.NoError(t, err)
 }
@@ -104,7 +104,7 @@ func TestQueryWithToken(t *testing.T) {
 		Sort("id", ASC).
 		Query("SELECT * FROM user").
 		Build()
-	require.Equal(t, "SELECT * FROM user WHERE (a < ? OR (a < ? AND id > ?)) ORDER BY a DESC, id ASC LIMIT 4", query)
+	require.Equal(t, "SELECT * FROM user WHERE (a < ? OR (a = ? AND id > ?))  ORDER BY a DESC, id ASC LIMIT 4", query)
 	require.Equal(t, []interface{}{"a4", "a4", "1"}, values)
 	require.NoError(t, err)
 }
@@ -115,7 +115,7 @@ func TestNoToken(t *testing.T) {
 		Sort("id", ASC).
 		Query("SELECT * FROM user").
 		Build()
-	require.Equal(t, "SELECT * FROM user  ORDER BY a DESC, id ASC LIMIT 4", query)
+	require.Equal(t, "SELECT * FROM user   ORDER BY a DESC, id ASC LIMIT 4", query)
 	require.Equal(t, []interface{}{}, values)
 	require.NoError(t, err)
 }
@@ -127,7 +127,7 @@ func TestNoTokenWithWhere(t *testing.T) {
 		Query("SELECT * FROM user").
 		Where("id = ?").
 		Build()
-	require.Equal(t, "SELECT * FROM user WHERE (id = ?) ORDER BY a DESC, id ASC LIMIT 4", query)
+	require.Equal(t, "SELECT * FROM user WHERE (id = ?)  ORDER BY a DESC, id ASC LIMIT 4", query)
 	require.Equal(t, []interface{}{}, values)
 	require.NoError(t, err)
 }
@@ -139,7 +139,7 @@ func TestNoTokenWithWhereAndBind(t *testing.T) {
 		Query("SELECT * FROM user").
 		Where("id = ?").
 		Build(1)
-	require.Equal(t, "SELECT * FROM user WHERE (id = ?) ORDER BY a DESC, id ASC LIMIT 4", query)
+	require.Equal(t, "SELECT * FROM user WHERE (id = ?)  ORDER BY a DESC, id ASC LIMIT 4", query)
 	require.Equal(t, []interface{}{1}, values)
 	require.NoError(t, err)
 }
