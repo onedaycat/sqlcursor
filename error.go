@@ -1,4 +1,4 @@
-package mongocursor
+package sqlcursor
 
 import "errors"
 
