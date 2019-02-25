@@ -33,6 +33,7 @@ type QueryCursorBuilder struct {
 	limit       int64
 	query       string
 	where       string
+	group       string
 	token       string
 	isPrevToken bool
 	isWhere     bool
@@ -93,6 +94,12 @@ func (c *QueryCursorBuilder) Where(where string) *QueryCursorBuilder {
 	return c
 }
 
+func (c *QueryCursorBuilder) Group(group string) *QueryCursorBuilder {
+	c.group = "GROUP BY " + group
+
+	return c
+}
+
 func (c *QueryCursorBuilder) Build(binds ...interface{}) (string, []interface{}, error) {
 	if err := c.validate(); err != nil {
 		return emptyStr, nil, err
@@ -128,12 +135,12 @@ func (c *QueryCursorBuilder) Build(binds ...interface{}) (string, []interface{},
 	}
 
 	if n == 1 && c.values != nil {
-		return fmt.Sprintf("%s %s %s %s %s", c.query, c.where, c.createSingleQuery(), sort, limit), c.bindValues, nil
+		return fmt.Sprintf("%s %s %s %s %s %s", c.query, c.where, c.createSingleQuery(), c.group, sort, limit), c.bindValues, nil
 	} else if c.values != nil {
-		return fmt.Sprintf("%s %s %s %s %s", c.query, c.where, c.createOrQuery(n), sort, limit), c.bindValues, nil
+		return fmt.Sprintf("%s %s %s %s %s %s", c.query, c.where, c.createOrQuery(n), c.group, sort, limit), c.bindValues, nil
 	}
 
-	return fmt.Sprintf("%s %s %s %s", c.query, c.where, sort, limit), c.bindValues, nil
+	return fmt.Sprintf("%s %s %s %s %s", c.query, c.where, c.group, sort, limit), c.bindValues, nil
 }
 
 func (c *QueryCursorBuilder) validate() error {
